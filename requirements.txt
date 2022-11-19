@@ -1,0 +1,17 @@
+Django
+psycopg2
+
+# ユーザ認証の実装に必要
+django-allauth
+
+# 画像ファイルを扱うために必要
+Pillow
+
+# 更新時に古いファイルを自動で削除するために必要
+django-cleanup
+
+# 画像の保存時に自動的にリサイズするために必要
+django-stdimage
+
+# フォームのデザインを整えるために必要
+django-widget-tweaks
