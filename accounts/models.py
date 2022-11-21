@@ -112,7 +112,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['email', 'nickname']
 
     class Meta:
-        verbose_name = _('ユーザ')
-        verbose_name_plural = _('ユーザ群')
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
 
