@@ -149,3 +149,7 @@ SITE_ID = 1
 
 LOGIN_REDIRECT_URL = 'snsapp:home'  # ログイン成功時のリダイレクト先をhomeページに設定
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+ACCOUNT_FORMS = {  # フォームのカスタマイズ
+    'signup': 'accounts.forms.SignupForm',
+}
