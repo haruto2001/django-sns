@@ -39,7 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'snsapp.apps.SnsappConfig',
     'django_bootstrap5',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -109,10 +114,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# デフォルトのユーザモデルをカスタムユーザモデルに上書き
-AUTH_USER_MODEL = 'accounts.User'
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -128,3 +129,27 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# 認証系の設定
+AUTH_USER_MODEL = 'accounts.User'  # デフォルトのユーザモデルをカスタムユーザモデルに上書き
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username'  # ログイン認証方法をユーザ名に設定
+ACCOUNT_USERNAME_REQUIRED = True  # ユーザ名の登録は必須
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # ユーザ登録時にメール認証は行わない
+ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスの登録は必須
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = 'snsapp:home'  # ログイン成功時のリダイレクト先をhomeページに設定
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+ACCOUNT_FORMS = {  # フォームのカスタマイズ
+    'signup': 'accounts.forms.SignupForm',
+}
