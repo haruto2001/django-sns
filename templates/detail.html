@@ -9,10 +9,10 @@
         <p>投稿者：{{object.user.username}}</p>
         <P>本文：{{object.content}}</P>
         {% if object.image %}
-            {{object.image}}
+            <p>画像：{{object.image}}</p>
         {% endif %}
         {% if object.url %}
-            {{object.url}}
+            <p>URL：{{object.url}}</p>
         {% endif %}
     </div>
 </div>

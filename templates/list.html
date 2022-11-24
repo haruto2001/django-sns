@@ -8,13 +8,14 @@
     <div class="alert alert-success" role="alert">
         <p>タイトル：{{item.title}}</p>
         <p>投稿者：{{item.user.username}}</p>
-        <P>本文：{{item.content}}</P>
+        <!-- <P>本文：{{item.content}}</P>
         {% if item.image %}
-            {{item.image}}
+            <P>画像：{{item.image}}</P>
         {% endif %}
         {% if item.url %}
-            {{item.url}}
-        {% endif %}
+            <p>URL：{{item.url}}</p>
+        {% endif %} -->
+        <a class="btn btn-primary" href="{% url 'snsapp:detail' item.pk %}" role="button">詳細</a>
     </div>
     {% endfor %}
 </div>
