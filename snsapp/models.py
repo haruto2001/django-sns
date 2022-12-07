@@ -1,11 +1,22 @@
+import uuid
+
+from django_cleanup import cleanup
+
 from django.db import models
 from accounts.models import User
+
+
+def image_directry_path(instance, filename):
+    """
+    ユニークなIDを生成して元のファイル名の拡張子を結合
+    """
+    return f'images/{str(uuid.uuid4())}.{filename.split(".")[-1]}'
 
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField(max_length=1000)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(upload_to=image_directry_path, blank=True, null=True)
     url = models.URLField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
