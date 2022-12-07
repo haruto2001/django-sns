@@ -54,7 +54,7 @@ class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         編集完了後の遷移先
         """
         pk = self.kwargs['pk']
-        return reverse_lazy('detail', kwargs={'pk': pk})
+        return reverse_lazy('snsapp:detail', kwargs={'pk': pk})
 
     def test_func(self, **kwargs):
         """
