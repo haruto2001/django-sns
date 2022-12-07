@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+<div class="container col-lg-6 offset-lg-3">
+    <div class="alert alert-success" role="alert">
+        <form method="post" enctype='multipart/form-data'>
+            {{ form.non_field_errors }}
+            {% for field in form %}
+            <div class="field">
+              {{ field.label_tag }}
+              {% render_field field class="form-control" %}
+              {{ field.errors }}
+            </div>
+            {% endfor %}
+            {% csrf_token %}
+            <div class="row my-3">
+                <button type="submit" class="btn btn-success col-3 offset-2">編集</button>
+                <a class="btn btn-danger col-3 offset-2" href="#" onclick="history.back(-1);return false;">キャンセル</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
