@@ -1,6 +1,6 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView
 from .forms import PostForm
 from .models import Post
 
@@ -13,7 +13,9 @@ class Home(LoginRequiredMixin, ListView):
    template_name = 'list.html'
 
    def get_queryset(self):
-       #リクエストユーザーのみ除外
+       """
+       リクエストユーザーのみ除外
+       """
        return Post.objects.exclude(user=self.request.user)
 
 
@@ -25,7 +27,9 @@ class MyPost(LoginRequiredMixin, ListView):
     template_name = 'list.html'
 
     def get_queryset(self):
-        #自分の投稿に限定
+        """
+        自分の投稿に限定
+        """
         return Post.objects.filter(user=self.request.user)
 
 
@@ -35,6 +39,30 @@ class DetailPost(LoginRequiredMixin, DetailView):
     """
     model = Post
     template_name = 'detail.html'
+
+
+class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """
+    投稿編集ページ
+    """
+    model = Post
+    template_name = 'update.html'
+    form_class = PostForm
+
+    def get_success_url(self, **kwargs):
+        """
+        編集完了後の遷移先
+        """
+        pk = self.kwargs['pk']
+        return reverse_lazy('detail', kwargs={'pk': pk})
+
+    def test_func(self, **kwargs):
+        """
+        アクセスできるユーザを制限
+        """
+        pk = self.kwargs['pk']
+        post = Post.objects.get(pk=pk)
+        return post.user == self.request.user
 
 
 class CreatePost(LoginRequiredMixin, CreateView):
