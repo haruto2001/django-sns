@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="alert alert-success" role="alert">
+        <form method="post">{% csrf_token %}
+            <p>本当に削除してもよろしいですか？</p>
+            <button type="submit" class="btn btn-success col-3 offset-2">削除</button>
+            <a class="btn btn-danger col-3 offset-2" href="#" onclick="history.back(-1);return false;">キャンセル</a>
+    </div>
+</div>
+{% endblock %}

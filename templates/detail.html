@@ -17,6 +17,7 @@
 
         {% if object.user == request.user %}
             <a class="btn btn-primary" href="{% url 'snsapp:update' object.pk %}" role="button">編集</a>
+            <a class="btn btn-danger" href="{% url 'snsapp:delete' object.pk %}" role="button">削除</a>
         {% endif %}
     </div>
 </div>
