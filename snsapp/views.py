@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from .forms import PostForm
 from .models import Post
 
@@ -82,3 +82,20 @@ class CreatePost(LoginRequiredMixin, CreateView):
         post.user = self.request.user
         post.save()
         return super().form_valid(form)
+
+
+class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """
+    投稿削除ページを表示
+    """
+    model = Post
+    template_name = 'delete.html'
+    success_url = reverse_lazy('snsapp:mypost')
+
+    def test_func(self, **kwargs):
+        """
+        アクセスできるユーザを制限
+        """
+        pk = self.kwargs['pk']
+        post = Post.objects.get(pk=pk)
+        return post.user == self.request.user
