@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Home, MyPost, DetailPost, UpdatePost, CreatePost
+from .views import Home, MyPost, DetailPost, UpdatePost, CreatePost, DeletePost
 
 
 app_name = 'snsapp'

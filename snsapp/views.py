@@ -84,7 +84,7 @@ class CreatePost(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class Deletepost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """
     投稿削除ページを表示
     """
