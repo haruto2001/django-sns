@@ -20,7 +20,7 @@ class Post(models.Model):
     url = models.URLField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    like_users = models.ManyToManyField(User, related_name='like_posts', blank=True)
+    like_users = models.ManyToManyField(User, related_name='related_post', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
