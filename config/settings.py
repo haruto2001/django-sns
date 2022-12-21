@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'snsapp.apps.SnsappConfig',
     'django_bootstrap5',
+    'django_bootstrap_icons',
     'widget_tweaks',
     'django.contrib.sites',
     'allauth',
