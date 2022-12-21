@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+
 
 {% block content %}
 <div class="container mt-3">
@@ -15,10 +19,16 @@
             <p>URL：{{object.url}}</p>
         {% endif %}
 
+        {% if request.user in object.like_users.all %}
+        <a class="like-btn add-color" href="{% url 'snsapp:like-detail' object.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{object.like_users.count}}
+        {% else %}
+        <a class="like-btn" href="{% url 'snsapp:like-detail' object.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{object.like_users.count}}
+        {% endif %}
+
         {% if object.user == request.user %}
             <a class="btn btn-primary" href="{% url 'snsapp:update' object.pk %}" role="button">編集</a>
             <a class="btn btn-danger" href="{% url 'snsapp:delete' object.pk %}" role="button">削除</a>
         {% endif %}
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

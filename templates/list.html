@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+
 
 {% block content %}
 <div class="container mt-3">
@@ -15,8 +19,16 @@
         {% if item.url %}
             <p>URL：{{item.url}}</p>
         {% endif %} -->
+
+
+        {% if request.user in item.like_users.all %}
+        <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{item.like_users.count}}
+        {% else %}
+        <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{item.like_users.count}}
+        {% endif %}
+
         <a class="btn btn-primary" href="{% url 'snsapp:detail' item.pk %}" role="button">詳細</a>
     </div>
     {% endfor %}
 </div>
-{% endblock %}
+{% endblock content %}

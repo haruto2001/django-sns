@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+# from accounts.models import User
 from .forms import PostForm
 from .models import Post
 
@@ -111,10 +112,10 @@ class LikeBase(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # 投稿を特定
         pk = self.kwargs['pk']
-        like_posts = Post.objects.get(pk=pk)
+        related_post = Post.objects.get(pk=pk)
 
         # 既にいいねしていた場合は解除
-        if  self.request.user in like_posts.like_users.all():
+        if  self.request.user in related_post.like_users.all():
             obj = related_post.like_users.remove(self.request.user)
         # そうでなければいいねをする
         else:
@@ -130,9 +131,8 @@ class LikeHome(LikeBase):
     def get(self, request, *args, **kwargs):
         # LikeBaseのobjを継承
         super().get(request, *args, **kwargs)
-        pk = kwargs['pk']
         # homeにリダイレクト
-        return redirect('snsapp:home', pk)
+        return redirect('snsapp:home')
 
 
 class LikeDetail(LikeBase):
@@ -142,7 +142,7 @@ class LikeDetail(LikeBase):
     def get(self, request, *args, **kwargs):
         # LikeBaseのobjを継承
         super().get(request, *args, **kwargs)
-        pk = kwargs['pk']
+        pk = self.kwargs['pk']
         # detailにリダイレクト
         return redirect('snsapp:detail', pk)
 
