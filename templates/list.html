@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+
 
 {% block content %}
 <div class="container mt-3">
@@ -15,8 +19,30 @@
         {% if item.url %}
             <p>URL：{{item.url}}</p>
         {% endif %} -->
+
+
+        {% if request.user in item.like_users.all %}
+        <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{item.like_users.count}}
+        {% else %}
+        <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{item.like_users.count}}
+        {% endif %}
+
         <a class="btn btn-primary" href="{% url 'snsapp:detail' item.pk %}" role="button">詳細</a>
+
+        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">いいねした人</button>
+        <ul class="dropdown-menu">
+            <!-- いいねしたユーザが１人でもいる場合 -->
+            {% if item.like_users.all %}
+                <!-- 全員の名前を表示 -->
+                {% for user in item.like_users.all %}
+                <li><a class="dropdown-item" href="#">{{user.username}}</a></li>
+                {% endfor %}
+            <!-- いいねしたユーザが１人もいない場合 -->
+            {% else %}
+                <li><a class="dropdown-item">いいねした人はいません</a></li>
+            {% endif %}
+        </ul>
     </div>
     {% endfor %}
 </div>
-{% endblock %}
+{% endblock content %}

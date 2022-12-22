@@ -1,6 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
+# from accounts.models import User
 from .forms import PostForm
 from .models import Post
 
@@ -99,3 +102,50 @@ class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         pk = self.kwargs['pk']
         post = Post.objects.get(pk=pk)
         return post.user == self.request.user
+
+
+class LikeBase(LoginRequiredMixin, View):
+    """
+    いいねのベース．データベースとのやり取りを定義．
+    リダイレクト先は継承先のViewで決定
+    """
+    def get(self, request, *args, **kwargs):
+        # 投稿を特定
+        pk = self.kwargs['pk']
+        related_post = Post.objects.get(pk=pk)
+
+        # 既にいいねしていた場合は解除
+        if  self.request.user in related_post.like_users.all():
+            obj = related_post.like_users.remove(self.request.user)
+        # そうでなければいいねをする
+        else:
+            obj = related_post.like_users.add(self.request.user)
+
+        return obj
+
+
+class LikeHome(LikeBase):
+    """
+    HOMEでいいねした場合
+    """
+    def get(self, request, *args, **kwargs):
+        # LikeBaseのobjを継承
+        super().get(request, *args, **kwargs)
+        # homeにリダイレクト
+        return redirect('snsapp:home')
+
+
+class LikeDetail(LikeBase):
+    """"
+    詳細ページでいいねした場合
+    """
+    def get(self, request, *args, **kwargs):
+        # LikeBaseのobjを継承
+        super().get(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        # detailにリダイレクト
+        return redirect('snsapp:detail', pk)
+
+
+
+
