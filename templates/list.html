@@ -22,14 +22,14 @@
 
 
         {% if request.user in item.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{item.like_users.count}}
+        <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
         {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{item.like_users.count}}
+        <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
         {% endif %}
 
         <a class="btn btn-primary" href="{% url 'snsapp:detail' item.pk %}" role="button">詳細</a>
 
-        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">いいねした人</button>
+        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">いいね {{item.like_users.count}}</button>
         <ul class="dropdown-menu">
             <!-- いいねしたユーザが１人でもいる場合 -->
             {% if item.like_users.all %}

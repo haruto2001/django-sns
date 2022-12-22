@@ -20,9 +20,9 @@
         {% endif %}
 
         {% if request.user in object.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-detail' object.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{object.like_users.count}}
+        <a class="like-btn add-color" href="{% url 'snsapp:like-detail' object.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
         {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-detail' object.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>{{object.like_users.count}}
+        <a class="like-btn" href="{% url 'snsapp:like-detail' object.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
         {% endif %}
 
         {% if object.user == request.user %}
@@ -30,7 +30,7 @@
             <a class="btn btn-danger" href="{% url 'snsapp:delete' object.pk %}" role="button">削除</a>
         {% endif %}
 
-        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">いいねした人</button>
+        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">いいね {{object.like_users.count}}</button>
         <ul class="dropdown-menu">
             <!-- いいねしたユーザが１人でもいる場合 -->
             {% if object.like_users.all %}
