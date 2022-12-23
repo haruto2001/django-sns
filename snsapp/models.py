@@ -28,3 +28,11 @@ class Post(models.Model):
 
     class Meta:
         ordering = ["-created_at"]  # 投稿順にクエリを取得
+
+
+class Connection(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    following = models.ManyToManyField(User, related_name='following', blank=True)
+
+    def __str__(self):
+        return self.user.username
