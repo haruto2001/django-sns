@@ -14,6 +14,9 @@ def image_directry_path(instance, filename):
 
 
 class Post(models.Model):
+    """
+    投稿モデル
+    """
     title = models.CharField(max_length=100)
     content = models.TextField(max_length=1000)
     image = models.ImageField(upload_to=image_directry_path, blank=True, null=True)
@@ -31,6 +34,9 @@ class Post(models.Model):
 
 
 class Connection(models.Model):
+    """
+    フォローモデル
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     following = models.ManyToManyField(User, related_name='following', blank=True)
 
