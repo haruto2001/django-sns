@@ -9,23 +9,32 @@ from .models import Post, Connection
 
 
 class Home(LoginRequiredMixin, ListView):
-   """
-   HOMEページで、自分以外のユーザの投稿をリスト表示
-   """
-   model = Post
-   template_name = 'list.html'
+    """
+    HOMEページで、自分以外のユーザの投稿をリスト表示
+    """
+    model = Post
+    template_name = 'list.html'
 
-   def get_queryset(self):
-       """
-       リクエストユーザーのみ除外
-       """
-       return Post.objects.exclude(user=self.request.user)
+    def get_queryset(self):
+        """
+        リクエストユーザーのみ除外
+        """
+        return Post.objects.exclude(user=self.request.user)
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        コネクションに関するオブジェクト情報をコンテクストに追加
+        """
+        context = super().get_context_data(*args, **kwargs)
+        # コンテクストに追加
+        context['connection'] = Connection.objects.get_or_create(user=self.request.user)
+        return context
 
 
 class MyPost(LoginRequiredMixin, ListView):
     """
     HOMEページで、自分の投稿をリスト表示
-   """
+    """
     model = Post
     template_name = 'list.html'
 
@@ -42,6 +51,15 @@ class DetailPost(LoginRequiredMixin, DetailView):
     """
     model = Post
     template_name = 'detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        コネクションに関するオブジェクト情報をコンテクストに追加
+        """
+        context = super().get_context_data(*args, **kwargs)
+        # コンテクストに追加
+        context['connection'] = Connection.objects.get_or_create(user=self.request.user)
+        return context
 
 
 class UpdatePost(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

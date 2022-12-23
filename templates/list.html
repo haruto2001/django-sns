@@ -42,6 +42,13 @@
                 <li><a class="dropdown-item">いいねした人はいません</a></li>
             {% endif %}
         </ul>
+
+        {% if item.user in connection.0.following.all %}
+            <a class="btn btn-success" href="{% url 'snsapp:follow-home' item.pk %}" role="button">フォロー解除</a>
+        {% else %}
+            <a class="btn btn-success" href="{% url 'snsapp:follow-home' item.pk %}" role="button">フォロー</a>
+        {% endif %}
+
     </div>
     {% endfor %}
 </div>
