@@ -5,7 +5,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 # from accounts.models import User
 from .forms import PostForm
-from .models import Post
+from .models import Post, Connection
 
 
 class Home(LoginRequiredMixin, ListView):
@@ -147,5 +147,74 @@ class LikeDetail(LikeBase):
         return redirect('snsapp:detail', pk)
 
 
+class FollowBase(LoginRequiredMixin, View):
+    """
+    フォローのベース．データベースとのやり取りを定義．
+    リダイレクト先は継承先のViewで決定
+    """
+    def get(self, request, *args, **kwargs):
+        # フォローまたはフォロー解除するユーザの特定
+        pk = self.kwargs['pk']
+        target_user = Post.objects.get(pk=pk).user
 
+        # コネクション情報を取得．存在しなければ作成．
+        my_connection = Connection.objects.get_or_create(user=self.request.user)
+
+        # フォローテーブルにターゲットが存在する場合はフォローテーブルから削除
+        if target_user in my_connection[0].following.all():
+            obj = my_connection[0].following.remove(target_user)
+        # 存在しない場合はフォローテーブルに追加
+        else:
+            obj = my_connection[0].following.add(target_user)
+
+        return obj
+
+
+class FollowHome(FollowBase):
+    """
+    HOMEでフォローした場合
+    """
+    def get(self, request, *args, **kwargs):
+        # FollowBaseのobjを継承
+        super().get(request, *args, **kwargs)
+        # homeにリダイレクト
+        return redirect('snsapp:home')
+
+
+class FollowDetail(FollowBase):
+    """
+    詳細ページでフォローした場合
+    """
+    def get(self, request, *args, **kwargs):
+        # FollowBaseのobjを継承
+        super().get(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        # detailにリダイレクト
+        return redirect('snsapp:detail', pk)
+
+
+class FollowList(LoginRequiredMixin, ListView):
+    """
+    フォローしているユーザの投稿をリスト表示
+    """
+    model = Post
+    template_name = 'list.html'
+
+    def get_queryset(self):
+        """
+        フォローリスト内にユーザが含まれている場合のみクエリセットを返す
+        """
+        my_connection = Connection[0].objects.get_or_create(user=self.request.user)
+        all_following = my_connection[0].following.all()
+        # 投稿ユーザがフォローしているユーザに含まれている場合オブジェクトを返す
+        return Post.objects.filter(user__in=all_following)
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        コネクションに関するオブジェクト情報をコンテクストに追加
+        """
+        context = super().get_context_data(*args, **kwargs)
+        # コンテクストに追加
+        context['connection'] = Connection.objects.get_or_create(user=self.request.user)
+        return context
 
