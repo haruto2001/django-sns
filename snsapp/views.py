@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
-# from accounts.models import User
+from accounts.models import User
 from .forms import PostForm
 from .models import Post, Connection
 
@@ -236,3 +236,18 @@ class FollowList(LoginRequiredMixin, ListView):
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
 
+
+class Profile(LoginRequiredMixin, ListView):
+    """
+    特定のユーザのユーザ情報をリスト表示
+    """
+    model = User
+    template_name = 'profile.html'
+
+    def get_queryset(self):
+        """
+        ユーザ情報を取得
+        """
+        # 現在のページのURLからユーザ名を取得
+        username = self.request.path.split('/')[-1]
+        return User.objects.filter(username=username)
