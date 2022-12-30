@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block customcss %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock customcss %}
+
+
+{% block content %}
+<div class="container mt-3">
+    {% for item in object_list %}
+    <div class="alert alert-success" role="alert">
+        <p>ユーザ名：{{item.username}}</p>
+        <p>ニックネーム：{{item.nickname}}</p>
+        <p>メールアドレス：{{item.email}}</p>
+        <p>アイコン：{{item.image}}</p>
+        <p>自己紹介：{{item.introduction}}</p>
+        <p>URL：{{item.url}}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
