@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from accounts.models import User
-from .forms import PostForm
+from .forms import PostForm, ProfileForm
 from .models import Post, Connection
 
 
@@ -251,3 +251,28 @@ class Profile(LoginRequiredMixin, ListView):
         # 現在のページのURLからユーザ名を取得
         username = self.request.path.split('/')[-1]
         return User.objects.filter(username=username)
+
+
+class UpdateProfile(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """
+    プロフィール更新ページ
+    """
+    model = User
+    template_name = 'update.html'
+    form_class = ProfileForm
+
+    def get_success_url(self, **kwargs):
+        """
+        更新完了後の遷移先
+        """
+        # 自身のユーザ名を取得
+        id = self.request.user.id
+        return reverse_lazy('snsapp:profile', kwargs={'id': id})
+
+    def test_func(self, **kwargs):
+        """
+        アクセスできるユーザを制限
+        """
+        pk = self.kwargs['pk']
+        user = User.objects.get(pk=pk)
+        return user == self.request.user
