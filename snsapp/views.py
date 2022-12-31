@@ -3,8 +3,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
-# from accounts.models import User
-from .forms import PostForm
+from accounts.models import User
+from .forms import PostForm, ProfileForm
 from .models import Post, Connection
 
 
@@ -165,9 +165,9 @@ class LikeDetail(LikeBase):
         return redirect('snsapp:detail', pk)
 
 
-class FollowBase(LoginRequiredMixin, View):
+class FollowBaseOnPost(LoginRequiredMixin, View):
     """
-    フォローのベース．データベースとのやり取りを定義．
+    投稿からのフォローのベース．データベースとのやり取りを定義．
     リダイレクト先は継承先のViewで決定
     """
     def get(self, request, *args, **kwargs):
@@ -188,27 +188,62 @@ class FollowBase(LoginRequiredMixin, View):
         return obj
 
 
-class FollowHome(FollowBase):
+class FollowHome(FollowBaseOnPost):
     """
     HOMEでフォローした場合
     """
     def get(self, request, *args, **kwargs):
-        # FollowBaseのobjを継承
+        # FollowBaseOnPostのobjを継承
         super().get(request, *args, **kwargs)
         # homeにリダイレクト
         return redirect('snsapp:home')
 
 
-class FollowDetail(FollowBase):
+class FollowDetail(FollowBaseOnPost):
     """
     詳細ページでフォローした場合
     """
     def get(self, request, *args, **kwargs):
-        # FollowBaseのobjを継承
+        # FollowBaseOnPostのobjを継承
         super().get(request, *args, **kwargs)
         pk = self.kwargs['pk']
         # detailにリダイレクト
         return redirect('snsapp:detail', pk)
+
+
+class FollowBaseOnProfile(LoginRequiredMixin, View):
+    """
+    プロフィールページからのフォローのベース．データベースとのやり取りを定義．
+    リダイレクト先は継承先のViewで決定
+    """
+    def get(self, request, *args, **kwargs):
+        # フォローまたはフォロー解除するユーザの特定
+        username = self.request.path.split('/')[-1]
+        target_user = User.objects.get(username=username)
+
+        # コネクション情報を取得．存在しなければ作成．
+        my_connection = Connection.objects.get_or_create(user=self.request.user)
+
+        # フォローテーブルにターゲットが存在する場合はフォローテーブルから削除
+        if target_user in my_connection[0].following.all():
+            obj = my_connection[0].following.remove(target_user)
+        # 存在しない場合はフォローテーブルに追加
+        else:
+            obj = my_connection[0].following.add(target_user)
+
+        return obj
+
+
+class FollowProfile(FollowBaseOnProfile):
+    """
+    プロフィールページでフォローした場合
+    """
+    def get(self, request, *args, **kwargs):
+        # FollowBaseOnProfileのobjを継承
+        super().get(request, *args, **kwargs)
+        username = self.kwargs['username']
+        # profileにリダイレクト
+        return redirect('snsapp:profile', username)
 
 
 class FollowList(LoginRequiredMixin, ListView):
@@ -236,3 +271,52 @@ class FollowList(LoginRequiredMixin, ListView):
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
 
+
+class Profile(LoginRequiredMixin, ListView):
+    """
+    特定のユーザのユーザ情報をリスト表示
+    """
+    model = User
+    template_name = 'profile.html'
+
+    def get_queryset(self):
+        """
+        ユーザ情報を取得
+        """
+        # 現在のページのURLからユーザ名を取得
+        username = self.request.path.split('/')[-1]
+        return User.objects.filter(username=username)
+
+    def get_context_data(self, *args, **kwargs):
+        """
+        コネクションに関するオブジェクト情報をコンテクストに追加
+        """
+        context = super().get_context_data(*args, **kwargs)
+        # コンテクストに追加
+        context['connection'] = Connection.objects.get_or_create(user=self.request.user)
+        return context
+
+
+class UpdateProfile(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """
+    プロフィール更新ページ
+    """
+    model = User
+    template_name = 'update.html'
+    form_class = ProfileForm
+
+    def get_success_url(self, **kwargs):
+        """
+        更新完了後の遷移先
+        """
+        # 自身のユーザ名を取得
+        username = self.request.user.username
+        return reverse_lazy('snsapp:profile', kwargs={'username': username})
+
+    def test_func(self, **kwargs):
+        """
+        アクセスできるユーザを制限
+        """
+        pk = self.kwargs['pk']
+        user = User.objects.get(pk=pk)
+        return user == self.request.user
