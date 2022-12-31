@@ -17,6 +17,12 @@
 
             {% if user == request.user %}
             <a class="btn btn-primary" href="{% url 'snsapp:profile-update' request.user.pk %}" role="button">編集</a>
+            {% else %}
+                {% if user in connection.0.following.all %}
+                    <a class="btn btn-success" href="{% url 'snsapp:follow-profile' user.username %}" role="button">フォロー解除</a>
+                {% else %}
+                    <a class="btn btn-success" href="{% url 'snsapp:follow-profile' user.username %}" role="button">フォロー</a>
+                {% endif %}
             {% endif %}
 
         {% endfor %}
