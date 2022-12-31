@@ -8,13 +8,19 @@
 
 {% block content %}
 <div class="container mt-3">
-    {% for item in object_list %}
     <div class="alert alert-success" role="alert">
-        <p>ニックネーム：{{item.nickname}}</p>
-        <p>アイコン：{{item.image}}</p>
-        <p>自己紹介：{{item.introduction}}</p>
-        <p>URL：{{item.url}}</p>
+        {% for user in object_list %}
+            <p>ニックネーム：{{user.nickname}}</p>
+            <p>アイコン：{{user.image}}</p>
+            <p>自己紹介：{{user.introduction}}</p>
+            <p>URL：{{user.url}}</p>
+
+            {% if user == request.user %}
+            <a class="btn btn-primary" href="{% url 'snsapp:profile-update' request.user.pk %}" role="button">編集</a>
+            {% endif %}
+
+        {% endfor %}
+
     </div>
-    {% endfor %}
 </div>
 {% endblock content %}

@@ -22,6 +22,9 @@
         <a class="navbar-brand" href="{% url 'snsapp:home' %}">Home</a>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
+              <a class="nav-link" href="{% url 'snsapp:profile' request.user.username %}">myprofile</a>
+            </div>
+            <div class="navbar-nav">
               <a class="nav-link" href="{% url 'snsapp:mypost' %}">mypost</a>
             </div>
             <div class="navbar-nav">
