@@ -310,8 +310,8 @@ class UpdateProfile(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         更新完了後の遷移先
         """
         # 自身のユーザ名を取得
-        id = self.request.user.id
-        return reverse_lazy('snsapp:profile', kwargs={'id': id})
+        username = self.request.user.username
+        return reverse_lazy('snsapp:profile', kwargs={'username': username})
 
     def test_func(self, **kwargs):
         """
