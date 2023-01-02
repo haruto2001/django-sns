@@ -279,12 +279,17 @@ class Profile(LoginRequiredMixin, ListView):
     model = User
     template_name = 'profile.html'
 
+    def get_username(self):
+        """
+        現在のページのURLからユーザ名を取得
+        """
+        return self.request.path.split('/')[-1]
+
     def get_queryset(self):
         """
         ユーザ情報を取得
         """
-        # 現在のページのURLからユーザ名を取得
-        username = self.request.path.split('/')[-1]
+        username = self.get_username()
         return User.objects.filter(username=username)
 
     def get_context_data(self, *args, **kwargs):
@@ -292,7 +297,11 @@ class Profile(LoginRequiredMixin, ListView):
         コネクションに関するオブジェクト情報をコンテクストに追加
         """
         context = super().get_context_data(*args, **kwargs)
-        # コンテクストに追加
+        # ユーザ名からユーザを特定
+        username = self.get_username()
+        user = User.objects.get(username=username)
+        # 投稿とコネクション情報をコンテクストに追加
+        context['posts'] = Post.objects.filter(user=user)
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
 
