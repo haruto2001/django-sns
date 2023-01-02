@@ -36,9 +36,9 @@
         <p>投稿者：<a href="{% url 'snsapp:profile' post.user.username %}">{{post.user.username}}</a></p>
 
         {% if request.user in post.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-home' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
         {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-home' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        <a class="like-btn" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
         {% endif %}
 
         <a class="btn btn-primary" href="{% url 'snsapp:detail' post.pk %}" role="button">詳細</a>
