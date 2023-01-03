@@ -11,7 +11,7 @@
     <div class="alert alert-success" role="alert">
         <p>タイトル：{{object.title}}</p>
         <p>投稿者：<a href="{% url 'snsapp:profile' object.user.username %}">{{object.user.username}}</a></p>
-        <P>本文：{{object.content}}</P>
+        <P>本文：{{object.content | linebreaksbr}}</P>
         {% if object.image %}
             <p>画像：{{object.image}}</p>
         {% endif %}
