@@ -37,10 +37,12 @@
         <p>タイトル：{{post.title}}</p>
         <p>投稿者：{{post.user.username}}</p>
 
-        {% if request.user in post.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
-        {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        {% if request.user != post.user %}
+            {% if request.user in post.like_users.all %}
+            <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% else %}
+            <a class="like-btn" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% endif %}
         {% endif %}
 
         <a class="btn btn-primary" href="{% url 'snsapp:detail' post.pk %}" role="button">詳細</a>

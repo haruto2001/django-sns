@@ -24,11 +24,13 @@
             <p>URL：{{item.url}}</p>
         {% endif %} -->
 
-
-        {% if request.user in item.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
-        {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        <!-- 自分の投稿でない場合のみいいねボタンを表示 -->
+        {% if request.user != item.user %}
+            {% if request.user in item.like_users.all %}
+            <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% else %}
+            <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% endif %}
         {% endif %}
 
         <a class="btn btn-primary" href="{% url 'snsapp:detail' item.pk %}" role="button">詳細</a>
