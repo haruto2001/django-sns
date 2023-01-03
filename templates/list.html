@@ -10,8 +10,19 @@
 <div class="container mt-3">
     {% for item in object_list %}
     <div class="alert alert-success" role="alert">
-        <p>タイトル：{{item.title}}</p>
-        <p>投稿者：<a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.username}}</a>
+        <p>
+            タイトル：{{item.title}}
+        </p>
+        <p>
+            投稿者：
+            <!-- ニックネームがある場合はそれを表示 -->
+            {% if item.user.nickname %}
+                <a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.nickname}}</a>
+            <!-- ない場合はユーザ名を表示 -->
+            {% else %}
+                <a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.username}}</a>
+            {% endif %}
+            <!-- アイコン画像がある場合は表示 -->
             {% if item.user.image %}
             <img src="{{item.user.image.url}}" width="30" height="30">
             {% endif %}
