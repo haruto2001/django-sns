@@ -11,12 +11,19 @@
     <div class="alert alert-success" role="alert">
         {% for user in object_list %}
             <p>
-                ニックネーム：{{user.nickname}}
+                ニックネーム：
+                {% if user.nickname %}
+                    {{user.nickname}}
+                {% else %}
+                    guest user
+                {% endif %}
             </p>
             <p>
                 アイコン：
                 {% if user.image %}
                     <img src="{{user.image.url}}" width="30" height="30">
+                {% else %}
+                    登録されていません．
                 {% endif %}
             </p>
             <p>
