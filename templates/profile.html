@@ -10,12 +10,31 @@
 <div class="container mt-3">
     <div class="alert alert-success" role="alert">
         {% for user in object_list %}
-            <p>ニックネーム：{{user.nickname}}</p>
-            {% if user.image %}
-                <p>アイコン：<img src="{{user.image.url}}" width="30" height="30"></p>
-            {% endif %}
-            <p>自己紹介：{{user.introduction}}</p>
-            <p>URL：{{user.url}}</p>
+            <p>
+                ニックネーム：{{user.nickname}}
+            </p>
+            <p>
+                アイコン：
+                {% if user.image %}
+                    <img src="{{user.image.url}}" width="30" height="30">
+                {% endif %}
+            </p>
+            <p>
+                自己紹介：
+                {% if user.introduction %}
+                    {{user.introduction}}
+                {% else %}
+                    よろしくお願いします．
+                {% endif %}
+            </p>
+            <p>
+                URL：
+                {% if user.url %}
+                    <a href="{{user.url}}">{{user.url}}</a>
+                {% else %}
+                    登録されていません．
+                {% endif %}
+            </p>
 
             {% if user == request.user %}
             <a class="btn btn-primary" href="{% url 'snsapp:profile-update' request.user.pk %}" role="button">編集</a>
