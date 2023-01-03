@@ -29,7 +29,7 @@
             <p>
                 自己紹介：
                 {% if user.introduction %}
-                    {{user.introduction}}
+                    {{user.introduction | linebreaksbr}}
                 {% else %}
                     よろしくお願いします．
                 {% endif %}
