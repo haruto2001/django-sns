@@ -11,7 +11,11 @@
     {% for item in object_list %}
     <div class="alert alert-success" role="alert">
         <p>タイトル：{{item.title}}</p>
-        <p>投稿者：<a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.username}}</a></p>
+        <p>投稿者：<a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.username}}</a>
+            {% if item.user.image %}
+            <img src="{{item.user.image.url}}" width="30" height="30">
+            {% endif %}
+        </p>
         <!-- <P>本文：{{item.content}}</P>
         {% if item.image %}
             <P>画像：{{item.image}}</P>
