@@ -33,7 +33,7 @@
     {% for post in posts %}
     <div class="alert alert-success" role="alert">
         <p>タイトル：{{post.title}}</p>
-        <p>投稿者：<a href="{% url 'snsapp:profile' post.user.username %}">{{post.user.username}}</a></p>
+        <p>投稿者：{{post.user.username}}</p>
 
         {% if request.user in post.like_users.all %}
         <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
