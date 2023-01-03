@@ -24,9 +24,41 @@
                     <a class="btn btn-success" href="{% url 'snsapp:follow-profile' user.username %}" role="button">フォロー</a>
                 {% endif %}
             {% endif %}
-
         {% endfor %}
 
     </div>
 </div>
+
+<div class="container mt-3" role="alert">
+    {% for post in posts %}
+    <div class="alert alert-success" role="alert">
+        <p>タイトル：{{post.title}}</p>
+        <p>投稿者：<a href="{% url 'snsapp:profile' post.user.username %}">{{post.user.username}}</a></p>
+
+        {% if request.user in post.like_users.all %}
+        <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        {% else %}
+        <a class="like-btn" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        {% endif %}
+
+        <a class="btn btn-primary" href="{% url 'snsapp:detail' post.pk %}" role="button">詳細</a>
+
+        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">いいね {{post.like_users.count}}</button>
+        <ul class="dropdown-menu">
+            <!-- いいねしたユーザが１人でもいる場合 -->
+            {% if post.like_users.all %}
+                <!-- 全員の名前を表示 -->
+                {% for user in post.like_users.all %}
+                <li><a class="dropdown-item" href="#">{{user.username}}</a></li>
+                {% endfor %}
+            <!-- いいねしたユーザが１人もいない場合 -->
+            {% else %}
+                <li><a class="dropdown-item">いいねした人はいません</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endfor %}
+
+</div>
+
 {% endblock content %}

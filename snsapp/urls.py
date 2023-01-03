@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, FollowHome, FollowDetail, FollowProfile, FollowList, Profile, UpdateProfile
+from .views import Home, MyPost, CreatePost, DetailPost, UpdatePost, DeletePost, LikeHome, LikeDetail, LikeProfile, FollowHome, FollowDetail, FollowProfile, FollowList, Profile, UpdateProfile
 
 
 app_name = 'snsapp'
@@ -13,6 +13,7 @@ urlpatterns = [
     path('detail/<int:pk>/delete', DeletePost.as_view(), name='delete'),
     path('like-home/<int:pk>', LikeHome.as_view(), name='like-home'),
     path('like-detail/<int:pk>', LikeDetail.as_view(), name='like-detail'),
+    path('like-profile/<int:pk>', LikeProfile.as_view(), name='like-profile'),
     path('follow-home/<int:pk>', FollowHome.as_view(), name='follow-home'),
     path('follow-detail/<int:pk>', FollowDetail.as_view(), name='follow-detail'),
     path('follow-profile/<slug:username>', FollowProfile.as_view(), name='follow-profile'),

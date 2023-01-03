@@ -124,7 +124,7 @@ class DeletePost(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class LikeBase(LoginRequiredMixin, View):
     """
-    いいねのベース．データベースとのやり取りを定義．
+    投稿ページでのいいねのベース．データベースとのやり取りを定義．
     リダイレクト先は継承先のViewで決定
     """
     def get(self, request, *args, **kwargs):
@@ -165,9 +165,23 @@ class LikeDetail(LikeBase):
         return redirect('snsapp:detail', pk)
 
 
+class LikeProfile(LikeBase):
+    """
+    プロフィールページでいいねした場合
+    """
+    def get(self, request, *args, **kwargs):
+        # LikeBaseのobjを継承
+        super().get(request, *args, **kwargs)
+        # 投稿からユーザ名を特定
+        pk = self.kwargs['pk']
+        username = Post.objects.get(pk=pk).user.username
+        # profileにリダイレクト
+        return redirect('snsapp:profile', username)
+
+
 class FollowBaseOnPost(LoginRequiredMixin, View):
     """
-    投稿からのフォローのベース．データベースとのやり取りを定義．
+    投稿ページでのフォローのベース．データベースとのやり取りを定義．
     リダイレクト先は継承先のViewで決定
     """
     def get(self, request, *args, **kwargs):
@@ -213,7 +227,7 @@ class FollowDetail(FollowBaseOnPost):
 
 class FollowBaseOnProfile(LoginRequiredMixin, View):
     """
-    プロフィールページからのフォローのベース．データベースとのやり取りを定義．
+    プロフィールページでのフォローのベース．データベースとのやり取りを定義．
     リダイレクト先は継承先のViewで決定
     """
     def get(self, request, *args, **kwargs):
@@ -279,12 +293,17 @@ class Profile(LoginRequiredMixin, ListView):
     model = User
     template_name = 'profile.html'
 
+    def get_username(self):
+        """
+        現在のページのURLからユーザ名を取得
+        """
+        return self.request.path.split('/')[-1]
+
     def get_queryset(self):
         """
         ユーザ情報を取得
         """
-        # 現在のページのURLからユーザ名を取得
-        username = self.request.path.split('/')[-1]
+        username = self.get_username()
         return User.objects.filter(username=username)
 
     def get_context_data(self, *args, **kwargs):
@@ -292,7 +311,11 @@ class Profile(LoginRequiredMixin, ListView):
         コネクションに関するオブジェクト情報をコンテクストに追加
         """
         context = super().get_context_data(*args, **kwargs)
-        # コンテクストに追加
+        # ユーザ名からユーザを特定
+        username = self.get_username()
+        user = User.objects.get(username=username)
+        # 投稿とコネクション情報をコンテクストに追加
+        context['posts'] = Post.objects.filter(user=user)
         context['connection'] = Connection.objects.get_or_create(user=self.request.user)
         return context
 
