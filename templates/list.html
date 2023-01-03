@@ -11,7 +11,11 @@
     {% for item in object_list %}
     <div class="alert alert-success" role="alert">
         <p>タイトル：{{item.title}}</p>
-        <p>投稿者：<a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.username}}</a></p>
+        <p>投稿者：<a href="{% url 'snsapp:profile' item.user.username %}">{{item.user.username}}</a>
+            {% if item.user.image %}
+            <img src="{{item.user.image.url}}" width="30" height="30">
+            {% endif %}
+        </p>
         <!-- <P>本文：{{item.content}}</P>
         {% if item.image %}
             <P>画像：{{item.image}}</P>
@@ -20,11 +24,13 @@
             <p>URL：{{item.url}}</p>
         {% endif %} -->
 
-
-        {% if request.user in item.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
-        {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        <!-- 自分の投稿でない場合のみいいねボタンを表示 -->
+        {% if request.user != item.user %}
+            {% if request.user in item.like_users.all %}
+            <a class="like-btn add-color" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% else %}
+            <a class="like-btn" href="{% url 'snsapp:like-home' item.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% endif %}
         {% endif %}
 
         <a class="btn btn-primary" href="{% url 'snsapp:detail' item.pk %}" role="button">詳細</a>

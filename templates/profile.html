@@ -10,10 +10,38 @@
 <div class="container mt-3">
     <div class="alert alert-success" role="alert">
         {% for user in object_list %}
-            <p>ニックネーム：{{user.nickname}}</p>
-            <p>アイコン：{{user.image}}</p>
-            <p>自己紹介：{{user.introduction}}</p>
-            <p>URL：{{user.url}}</p>
+            <p>
+                ニックネーム：
+                {% if user.nickname %}
+                    {{user.nickname}}
+                {% else %}
+                    guest user
+                {% endif %}
+            </p>
+            <p>
+                アイコン：
+                {% if user.image %}
+                    <img src="{{user.image.url}}" width="30" height="30">
+                {% else %}
+                    登録されていません．
+                {% endif %}
+            </p>
+            <p>
+                自己紹介：
+                {% if user.introduction %}
+                    {{user.introduction}}
+                {% else %}
+                    よろしくお願いします．
+                {% endif %}
+            </p>
+            <p>
+                URL：
+                {% if user.url %}
+                    <a href="{{user.url}}">{{user.url}}</a>
+                {% else %}
+                    登録されていません．
+                {% endif %}
+            </p>
 
             {% if user == request.user %}
             <a class="btn btn-primary" href="{% url 'snsapp:profile-update' request.user.pk %}" role="button">編集</a>
@@ -33,12 +61,14 @@
     {% for post in posts %}
     <div class="alert alert-success" role="alert">
         <p>タイトル：{{post.title}}</p>
-        <p>投稿者：<a href="{% url 'snsapp:profile' post.user.username %}">{{post.user.username}}</a></p>
+        <p>投稿者：{{post.user.username}}</p>
 
-        {% if request.user in post.like_users.all %}
-        <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
-        {% else %}
-        <a class="like-btn" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+        {% if request.user != post.user %}
+            {% if request.user in post.like_users.all %}
+            <a class="like-btn add-color" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% else %}
+            <a class="like-btn" href="{% url 'snsapp:like-profile' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="bi bi-heart-fill"></i></a>
+            {% endif %}
         {% endif %}
 
         <a class="btn btn-primary" href="{% url 'snsapp:detail' post.pk %}" role="button">詳細</a>
