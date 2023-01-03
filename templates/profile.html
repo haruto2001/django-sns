@@ -11,7 +11,9 @@
     <div class="alert alert-success" role="alert">
         {% for user in object_list %}
             <p>ニックネーム：{{user.nickname}}</p>
-            <p>アイコン：{{user.image}}</p>
+            {% if user.image %}
+                <p>アイコン：<img src="{{user.image.url}}" width="30" height="30"></p>
+            {% endif %}
             <p>自己紹介：{{user.introduction}}</p>
             <p>URL：{{user.url}}</p>
 

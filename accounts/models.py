@@ -49,6 +49,13 @@ class UserManager(BaseUserManager):
         return self._create_user(username, email, nickname, password, **extra_fields)
 
 
+def image_directory_path(instance, filename):
+    """
+    ユーザ名と元のファイル名の拡張子を結合
+    """
+    return f'icons/{instance.username}.{filename.split(".")[-1]}'
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     """カスタムユーザモデル"""
     """
@@ -74,6 +81,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     image = models.ImageField(
         verbose_name=_('profile image'),
+        upload_to=image_directory_path,
         blank=True,
         null=True,
     )
